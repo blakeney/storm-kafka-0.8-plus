@@ -12,10 +12,13 @@ public class StaticCoordinator implements PartitionCoordinator {
 
     public StaticCoordinator(DynamicPartitionConnections connections, Map stormConf, SpoutConfig config, ZkState state, int taskIndex, int totalTasks, String topologyInstanceId) {
         StaticHosts hosts = (StaticHosts) config.hosts;
-        List<Partition> myPartitions = KafkaUtils.calculatePartitionsForTask(hosts.getPartitionInformation(), totalTasks, taskIndex);
-        for (Partition myPartition : myPartitions) {
+        List<Partition> partitions = hosts.getPartitionInformation().getOrderedPartitions();
+        for (int i = taskIndex; i < partitions.size(); i += totalTasks) {
+            Partition myPartition = partitions.get(i);
             _managers.put(myPartition, new PartitionManager(connections, topologyInstanceId, state, stormConf, config, myPartition));
+
         }
+
         _allManagers = new ArrayList(_managers.values());
     }
 
