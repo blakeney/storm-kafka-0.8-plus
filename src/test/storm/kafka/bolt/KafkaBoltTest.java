@@ -45,7 +45,7 @@ public class KafkaBoltTest {
     @Before
     public void initMocks() {
         MockitoAnnotations.initMocks(this);
-        broker = new KafkaTestBroker();
+        broker = new KafkaTestBroker(30000, 40000);
         setupKafkaConsumer();
         config.put(KafkaBolt.TOPIC, TEST_TOPIC);
         bolt = generateStringSerializerBolt();

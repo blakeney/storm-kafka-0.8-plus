@@ -14,14 +14,16 @@ import java.util.Properties;
  */
 public class KafkaTestBroker {
 
-    private final int port = 49123;
+    //private final int port = 49123;
+    private int port;
     private KafkaServerStartable kafka;
     private TestingServer server;
     private String zookeeperConnectionString;
 
-    public KafkaTestBroker() {
+    public KafkaTestBroker(int zkPort, int brokerPort) {
         try {
-            server = new TestingServer();
+        	this.port = brokerPort;
+            server = new TestingServer(zkPort);
             zookeeperConnectionString = server.getConnectString();
             ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, 3);
             CuratorFramework zookeeper = CuratorFrameworkFactory.newClient(zookeeperConnectionString, retryPolicy);
@@ -48,6 +50,6 @@ public class KafkaTestBroker {
 
     public void shutdown() {
         kafka.shutdown();
-        server.stop();
+        server.close();
     }
 }

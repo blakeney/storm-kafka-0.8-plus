@@ -29,10 +29,12 @@ public class KafkaUtilsTest {
     private SimpleConsumer simpleConsumer;
     private KafkaConfig config;
     private BrokerHosts brokerHosts;
+    private int zkPort = 30002;
+    private int brokerPort = 40002;
 
     @Before
     public void setup() {
-        broker = new KafkaTestBroker();
+        broker = new KafkaTestBroker(zkPort, brokerPort);
         GlobalPartitionInformation globalPartitionInformation = new GlobalPartitionInformation();
         globalPartitionInformation.addPartition(0, Broker.fromString(broker.getBrokerConnectionString()));
         brokerHosts = new StaticHosts(globalPartitionInformation);
@@ -41,9 +43,11 @@ public class KafkaUtilsTest {
     }
 
     @After
-    public void shutdown() {
+    public void shutdown() throws InterruptedException {
         simpleConsumer.close();
         broker.shutdown();
+        zkPort = zkPort + 1;
+        brokerPort = brokerPort + 1;
     }
 
 
@@ -173,7 +177,7 @@ public class KafkaUtilsTest {
 
     private void createTopicAndSendMessage(String key, String value) {
         Properties p = new Properties();
-        p.setProperty("metadata.broker.list", "localhost:49123");
+        p.setProperty("metadata.broker.list", "localhost:" + brokerPort);
         p.setProperty("serializer.class", "kafka.serializer.StringEncoder");
         ProducerConfig producerConfig = new ProducerConfig(p);
         Producer<String, String> producer = new Producer<String, String>(producerConfig);

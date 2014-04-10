@@ -26,7 +26,7 @@ public class ZkCoordinatorTest {
     @Mock
     private DynamicPartitionConnections dynamicPartitionConnections;
 
-    private KafkaTestBroker broker = new KafkaTestBroker();
+    private KafkaTestBroker broker = new KafkaTestBroker(30001, 40001);
     private TestingServer server;
     private Map stormConf = new HashMap();
     private SpoutConfig spoutConfig;
