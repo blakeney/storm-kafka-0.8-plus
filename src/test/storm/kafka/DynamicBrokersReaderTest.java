@@ -6,15 +6,13 @@ import com.netflix.curator.framework.CuratorFrameworkFactory;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
 import com.netflix.curator.test.TestingServer;
 import com.netflix.curator.utils.ZKPaths;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import storm.kafka.trident.GlobalPartitionInformation;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.*;
+import org.testng.annotations.*;
 
 /**
  * Date: 16/05/2013
@@ -27,7 +25,7 @@ public class DynamicBrokersReaderTest {
     private CuratorFramework zookeeper;
     private TestingServer server;
 
-    @Before
+    @BeforeMethod
     public void setUp() throws Exception {
         server = new TestingServer();
         String connectionString = server.getConnectString();
@@ -41,7 +39,7 @@ public class DynamicBrokersReaderTest {
         zookeeper.start();
     }
 
-    @After
+    @AfterMethod
     public void tearDown() throws Exception {
         dynamicBrokersReader.close();
         zookeeper.close();

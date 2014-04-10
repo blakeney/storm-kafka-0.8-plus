@@ -3,16 +3,13 @@ package storm.kafka;
 import backtype.storm.Config;
 import com.netflix.curator.test.TestingServer;
 import kafka.javaapi.consumer.SimpleConsumer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.testng.Assert.*;
+import org.testng.annotations.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -33,7 +30,7 @@ public class ZkCoordinatorTest {
     private ZkState state;
     private SimpleConsumer simpleConsumer;
 
-    @Before
+    @BeforeMethod
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         server = new TestingServer();
@@ -57,7 +54,7 @@ public class ZkCoordinatorTest {
         return conf;
     }
 
-    @After
+    @AfterMethod
     public void shutdown() throws Exception {
         simpleConsumer.close();
         broker.shutdown();

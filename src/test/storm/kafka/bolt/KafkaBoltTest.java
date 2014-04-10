@@ -15,9 +15,6 @@ import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.javaapi.message.ByteBufferMessageSet;
 import kafka.message.Message;
 import kafka.message.MessageAndOffset;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import storm.kafka.*;
@@ -27,7 +24,8 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.*;
+import org.testng.annotations.*;
 import static org.mockito.Mockito.verify;
 
 public class KafkaBoltTest {
@@ -42,7 +40,7 @@ public class KafkaBoltTest {
     @Mock
     private IOutputCollector collector;
 
-    @Before
+    @BeforeMethod
     public void initMocks() {
         MockitoAnnotations.initMocks(this);
         broker = new KafkaTestBroker();
@@ -51,7 +49,7 @@ public class KafkaBoltTest {
         bolt = generateStringSerializerBolt();
     }
 
-    @After
+    @AfterMethod
     public void shutdown() {
         simpleConsumer.close();
         broker.shutdown();

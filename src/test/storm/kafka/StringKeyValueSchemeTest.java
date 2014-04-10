@@ -2,12 +2,11 @@ package storm.kafka;
 
 import backtype.storm.tuple.Fields;
 import com.google.common.collect.ImmutableMap;
-import org.junit.Test;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.*;
+import org.testng.annotations.*;
 
 public class StringKeyValueSchemeTest {
 
