@@ -48,6 +48,6 @@ public class KafkaTestBroker {
 
     public void shutdown() {
         kafka.shutdown();
-        server.stop();
+        server.close();
     }
 }

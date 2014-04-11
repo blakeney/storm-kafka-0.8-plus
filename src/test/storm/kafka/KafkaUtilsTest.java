@@ -68,7 +68,7 @@ public class KafkaUtilsTest {
         ByteBufferMessageSet messageAndOffsets = KafkaUtils.fetchMessages(config, simpleConsumer,
                 new Partition(Broker.fromString(broker.getBrokerConnectionString()), 0), offset);
         String message = new String(Utils.toByteArray(messageAndOffsets.iterator().next().message().payload()));
-        assertThat(message, is(equalTo(value)));
+        assertEquals(value, message);
     }
 
     @Test(expected = FailedFetchException.class)
@@ -86,7 +86,7 @@ public class KafkaUtilsTest {
         ByteBufferMessageSet messageAndOffsets = KafkaUtils.fetchMessages(config, simpleConsumer,
                 new Partition(Broker.fromString(broker.getBrokerConnectionString()), 0), -99);
         String message = new String(Utils.toByteArray(messageAndOffsets.iterator().next().message().payload()));
-        assertThat(message, is(equalTo(value)));
+        assertEquals(value, message);
     }
 
     @Test
@@ -96,55 +96,36 @@ public class KafkaUtilsTest {
         createTopicAndSendMessage();
         long latestOffset = KafkaUtils.getOffset(simpleConsumer, config.topic, 0, OffsetRequest.LatestTime());
         long offsetFromConfig = KafkaUtils.getOffset(simpleConsumer, config.topic, 0, config);
-        assertThat(latestOffset, is(equalTo(offsetFromConfig)));
+        assertEquals(latestOffset, offsetFromConfig);
     }
 
     @Test
-    public void getOffsetFromConfigAndFroceFromStart() {
+    public void getOffsetFromConfigAndForceFromStart() {
         config.forceFromStart = true;
         config.startOffsetTime = OffsetRequest.EarliestTime();
         createTopicAndSendMessage();
         long earliestOffset = KafkaUtils.getOffset(simpleConsumer, config.topic, 0, OffsetRequest.EarliestTime());
         long offsetFromConfig = KafkaUtils.getOffset(simpleConsumer, config.topic, 0, config);
-        assertThat(earliestOffset, is(equalTo(offsetFromConfig)));
+        assertEquals(earliestOffset, offsetFromConfig);
     }
 
     @Test
-    public void generateTuplesWithoutKeyAndKeyValueScheme() {
-        config.scheme = new KeyValueSchemeAsMultiScheme(new StringKeyValueScheme());
-        runGetValueOnlyTuplesTest();
-    }
-
-    @Test
-    public void generateTuplesWithKeyAndKeyValueScheme() {
-        config.scheme = new KeyValueSchemeAsMultiScheme(new StringKeyValueScheme());
+    public void generateTuplesFromKeyedMessage() {
         String value = "value";
         String key = "key";
         createTopicAndSendMessage(key, value);
         ByteBufferMessageSet messageAndOffsets = getLastMessage();
         for (MessageAndOffset msg : messageAndOffsets) {
             Iterable<List<Object>> lists = KafkaUtils.generateTuples(config, msg.message());
-            assertEquals(ImmutableMap.of(key, value), lists.iterator().next().get(0));
+            List<Object> list = lists.iterator().next();
+            assertEquals(key, list.get(0));
+            assertEquals(value, list.get(1));
         }
     }
 
     @Test
-    public void generateTupelsWithValueScheme() {
-        config.scheme = new SchemeAsMultiScheme(new StringScheme());
+    public void generateTuplesFromKeylessMessage() {
         runGetValueOnlyTuplesTest();
-    }
-
-    @Test
-    public void generateTuplesWithValueSchemeAndKeyValueMessage() {
-        config.scheme = new SchemeAsMultiScheme(new StringScheme());
-        String value = "value";
-        String key = "key";
-        createTopicAndSendMessage(key, value);
-        ByteBufferMessageSet messageAndOffsets = getLastMessage();
-        for (MessageAndOffset msg : messageAndOffsets) {
-            Iterable<List<Object>> lists = KafkaUtils.generateTuples(config, msg.message());
-            assertEquals(value, lists.iterator().next().get(0));
-        }
     }
 
     private ByteBufferMessageSet getLastMessage() {
@@ -158,7 +139,7 @@ public class KafkaUtilsTest {
         ByteBufferMessageSet messageAndOffsets = getLastMessage();
         for (MessageAndOffset msg : messageAndOffsets) {
             Iterable<List<Object>> lists = KafkaUtils.generateTuples(config, msg.message());
-            assertEquals(value, lists.iterator().next().get(0));
+            assertEquals(value, lists.iterator().next().get(1));
         }
     }
 
