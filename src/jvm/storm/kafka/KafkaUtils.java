@@ -3,6 +3,7 @@ package storm.kafka;
 import backtype.storm.metric.api.IMetric;
 import backtype.storm.utils.Utils;
 import com.google.common.base.Preconditions;
+import java.io.IOException;
 import kafka.api.FetchRequest;
 import kafka.api.FetchRequestBuilder;
 import kafka.api.PartitionOffsetRequestInfo;
@@ -30,7 +31,7 @@ public class KafkaUtils {
     private static final int NO_OFFSET = -5;
 
 
-    public static IBrokerReader makeBrokerReader(Map stormConf, KafkaConfig conf) {
+    public static IBrokerReader makeBrokerReader(Map stormConf, KafkaConfig conf) throws IOException {
         if (conf.hosts instanceof StaticHosts) {
             return new StaticBrokerReader(((StaticHosts) conf.hosts).getPartitionInformation());
         } else {

@@ -1,12 +1,13 @@
 package storm.kafka;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import storm.kafka.trident.GlobalPartitionInformation;
+import java.io.IOException;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import static storm.kafka.KafkaUtils.taskId;
+import storm.kafka.trident.GlobalPartitionInformation;
 
 public class ZkCoordinator implements PartitionCoordinator {
     public static final Logger LOG = LoggerFactory.getLogger(ZkCoordinator.class);
@@ -24,7 +25,7 @@ public class ZkCoordinator implements PartitionCoordinator {
     ZkState _state;
     Map _stormConf;
 
-    public ZkCoordinator(DynamicPartitionConnections connections, Map stormConf, SpoutConfig spoutConfig, ZkState state, int taskIndex, int totalTasks, String topologyInstanceId) {
+    public ZkCoordinator(DynamicPartitionConnections connections, Map stormConf, SpoutConfig spoutConfig, ZkState state, int taskIndex, int totalTasks, String topologyInstanceId) throws IOException {
         this(connections, stormConf, spoutConfig, state, taskIndex, totalTasks, topologyInstanceId, buildReader(stormConf, spoutConfig));
     }
 
@@ -41,7 +42,7 @@ public class ZkCoordinator implements PartitionCoordinator {
         _reader = reader;
     }
 
-    private static DynamicBrokersReader buildReader(Map stormConf, SpoutConfig spoutConfig) {
+    private static DynamicBrokersReader buildReader(Map stormConf, SpoutConfig spoutConfig) throws IOException {
         ZkHosts hosts = (ZkHosts) spoutConfig.hosts;
         return new DynamicBrokersReader(stormConf, hosts.brokerZkStr, hosts.brokerZkPath, spoutConfig.topic);
     }

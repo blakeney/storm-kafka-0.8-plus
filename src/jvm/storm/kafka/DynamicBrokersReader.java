@@ -5,14 +5,14 @@ import backtype.storm.utils.Utils;
 import com.netflix.curator.framework.CuratorFramework;
 import com.netflix.curator.framework.CuratorFrameworkFactory;
 import com.netflix.curator.retry.RetryNTimes;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.Map;
 import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import storm.kafka.trident.GlobalPartitionInformation;
-
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Map;
 
 public class DynamicBrokersReader {
 
@@ -22,7 +22,7 @@ public class DynamicBrokersReader {
     private String _zkPath;
     private String _topic;
 
-    public DynamicBrokersReader(Map conf, String zkStr, String zkPath, String topic) {
+    public DynamicBrokersReader(Map conf, String zkStr, String zkPath, String topic) throws IOException {
         _zkPath = zkPath;
         _topic = topic;
         _curator = CuratorFrameworkFactory.newClient(

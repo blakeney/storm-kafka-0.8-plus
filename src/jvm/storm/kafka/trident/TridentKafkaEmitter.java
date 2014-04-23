@@ -7,6 +7,7 @@ import backtype.storm.metric.api.ReducedMetric;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.utils.Utils;
 import com.google.common.collect.ImmutableMap;
+import java.io.IOException;
 import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.javaapi.message.ByteBufferMessageSet;
 import kafka.message.Message;
@@ -43,7 +44,7 @@ public class TridentKafkaEmitter {
     private TridentKafkaConfig _config;
     private String _topologyInstanceId;
 
-    public TridentKafkaEmitter(Map conf, TopologyContext context, TridentKafkaConfig config, String topologyInstanceId) {
+    public TridentKafkaEmitter(Map conf, TopologyContext context, TridentKafkaConfig config, String topologyInstanceId) throws IOException {
         _config = config;
         _topologyInstanceId = topologyInstanceId;
         _connections = new DynamicPartitionConnections(_config, KafkaUtils.makeBrokerReader(conf, _config));

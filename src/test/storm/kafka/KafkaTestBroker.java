@@ -2,9 +2,7 @@ package storm.kafka;
 
 import com.netflix.curator.framework.CuratorFramework;
 import com.netflix.curator.framework.CuratorFrameworkFactory;
-import com.netflix.curator.framework.imps.CuratorFrameworkState;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
-import com.netflix.curator.test.InstanceSpec;
 import com.netflix.curator.test.TestingServer;
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaServerStartable;
@@ -32,7 +30,7 @@ public class KafkaTestBroker {
             ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, 3);
             zookeeper = CuratorFrameworkFactory.newClient(zookeeperConnectionString, retryPolicy);
             zookeeper.start();
-            port = InstanceSpec.getRandomPort();
+            port = 49123; //InstanceSpec.getRandomPort();
             kafka.server.KafkaConfig config = buildKafkaConfig(zookeeperConnectionString);
             kafka = new KafkaServerStartable(config);
             kafka.startup();
@@ -65,7 +63,7 @@ public class KafkaTestBroker {
 
     public void shutdown() throws IOException {
         kafka.shutdown();
-        if (zookeeper.getState().equals(CuratorFrameworkState.STARTED)) {
+        if (zookeeper.isStarted()) {
             zookeeper.close();
         }
         server.close();

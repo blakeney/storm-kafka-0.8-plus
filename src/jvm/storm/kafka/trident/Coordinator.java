@@ -1,5 +1,6 @@
 package storm.kafka.trident;
 
+import java.io.IOException;
 import storm.kafka.KafkaUtils;
 import storm.trident.spout.IOpaquePartitionedTridentSpout;
 import storm.trident.spout.IPartitionedTridentSpout;
@@ -15,7 +16,7 @@ class Coordinator implements IPartitionedTridentSpout.Coordinator<GlobalPartitio
     private IBrokerReader reader;
     private TridentKafkaConfig config;
 
-    public Coordinator(Map conf, TridentKafkaConfig tridentKafkaConfig) {
+    public Coordinator(Map conf, TridentKafkaConfig tridentKafkaConfig) throws IOException {
         config = tridentKafkaConfig;
         reader = KafkaUtils.makeBrokerReader(conf, config);
     }
